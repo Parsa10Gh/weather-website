@@ -1,14 +1,23 @@
 const inputElem = document.querySelector('input')
 
 let apiData = {
-    url: 'https://api.openweathermap.org/data/2.5/weather?q=',
-    key: '26c4d8ad14b57209671494df9bd9fcb9'
+    url: `https://api.openweathermap.org/data/2.5/weather?q=London&appid={ca192234b16572911be8eca3e4c7d52f}`,
+    key: '5BUE3MXH497P97J35LABKCLUT'
 }
+
+let countryInitiallValue = "Tehran";
+
+fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${countryInitiallValue}?key=${apiData.key}`).
+    then(res => res.json())
+    .then(data => {
+        console.log(data);
+        showData(data)
+    })
 
 function fetchData () {
     let countryValue = inputElem.value
 
-    fetch(`${apiData.url}${countryValue}&&appid=${apiData.key}`).
+    fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${countryValue}?key=${apiData.key}`).
         then(res => res.json())
         .then(data => {
             console.log(data);
@@ -19,19 +28,19 @@ function fetchData () {
 
 function showData (data) {
     let cityElem = document.querySelector('.city')
-    cityElem.innerHTML = `${data.name}, ${data.sys.country}`
+    cityElem.innerHTML = `${data.resolvedAddress}`
 
     let dateElem = document.querySelector('.date')
     dateElem.innerHTML = showDate()
 
     let tempElem = document.querySelector('.temp')
-    tempElem.innerHTML = `${Math.floor(data.main.temp - 273.15)}°c`
+    tempElem.innerHTML = `${Math.floor((data.currentConditions.temp - 32)/1.8)}°c`
 
     let weatherElem = document.querySelector('.weather')
-    weatherElem.innerHTML = `${data.weather[0].main}`
+    weatherElem.innerHTML = `${data.currentConditions.conditions}`
 
     let tempsElem = document.querySelector('.hi-low')
-    tempsElem.innerHTML = `${Math.floor(data.main.temp_min - 273.15)}°c / ${Math.floor(data.main.temp_max - 273.15)}°c`
+    tempsElem.innerHTML = `${Math.floor((data.days[0].tempmin - 32)/1.8)}°c / ${Math.floor((data.days[0].tempmax - 32)/1.8)}°c`
 }
 
 function showDate () {
